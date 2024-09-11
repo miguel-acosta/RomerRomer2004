@@ -111,8 +111,12 @@ mappingNP.loc['19940629','GBdate'] = 19940630
 # Fix one instance of the wrong FOMC meeting date being labeled by its first day.
 mappingNP.loc['19721115','FOMCdate'] = 19721121
 
+# Fixing a bug caught by Paul Bousquet (thank you!)
+mappingNP.loc['20100422','GBdate'] = 20100421
+
 # Add a variable
 mappingNP['GBpubDate'] = mappingNP.index
+
 
 # Print to csv
 mappingNP.to_csv(path_or_buf = 'intermediates/GBFOMCmapping.csv',sep=',',index=False)
