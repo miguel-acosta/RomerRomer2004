@@ -35,12 +35,12 @@ hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
 
 def getMapping(url):
     pageSourceCode = str(urlopen(Request(url,headers=hdr)).read())
-    pdfNames       = re.findall('[Ff][oO][mM][cC][0-9]{8}greenbook[0-9]{8}.pdf', pageSourceCode)
+    pdfNames       = re.findall(r'[Ff][oO][mM][cC][0-9]{8}greenbook[0-9]{8}.pdf', pageSourceCode)
     # "New" refers to the fact that after a certain point in time, the
     # greenbook was posted as two parts, so the pdf name is different
-    pdfNamesNew    = re.findall('[Ff][oO][mM][cC][0-9]{8}gbpt1[0-9]{8}.pdf', pageSourceCode)
-    tealbookNames  = re.findall('[Ff][oO][mM][cC][0-9]{8}tealbooka[0-9]{8}.pdf', pageSourceCode)
-    specialNames   = re.findall('[Ff][oO][mM][cC][0-9]{8}gbspecial[0-9]{8}.pdf', pageSourceCode)
+    pdfNamesNew    = re.findall(r'[Ff][oO][mM][cC][0-9]{8}gbpt1[0-9]{8}.pdf', pageSourceCode)
+    tealbookNames  = re.findall(r'[Ff][oO][mM][cC][0-9]{8}tealbooka[0-9]{8}.pdf', pageSourceCode)
+    specialNames   = re.findall(r'[Ff][oO][mM][cC][0-9]{8}gbspecial[0-9]{8}.pdf', pageSourceCode)
 
     if not pdfNames:
         pdfNames = []
@@ -57,8 +57,8 @@ def getMapping(url):
     GBdates = []
     FOMCdates = []
     for p in pdfNames:
-        FOMCdate = re.findall('[Ff][oO][mM][cC][0-9]{8}',p)[0][4:]
-        GBdate = re.findall('[0-9]{8}.pdf',p)[0][:-4]
+        FOMCdate = re.findall(r'[Ff][oO][mM][cC][0-9]{8}',p)[0][4:]
+        GBdate = re.findall(r'[0-9]{8}.pdf',p)[0][:-4]
         FOMCdates.append(FOMCdate)
         GBdates.append(GBdate)
     return FOMCdates, GBdates
@@ -68,7 +68,7 @@ def getMapping(url):
 ## Figure out which years are posted on the Fed's website
 url = 'https://www.federalreserve.gov/monetarypolicy/fomc_historical_year.htm'
 historical_page = urlopen(Request(url,headers=hdr)).read()
-years = [int(mm) for mm in set(re.findall('fomchistorical([0-9]{4})\.htm',str(historical_page)))]
+years = [int(mm) for mm in set(re.findall(r'fomchistorical([0-9]{4})\.htm',str(historical_page)))]
 
 mapping = [[],[]]
 for y in range(1967,max(years)+1):

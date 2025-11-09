@@ -35,20 +35,31 @@ save `RR', replace
 /******************************************************************************/
 /* Load FFR from FRED if desired                                              */
 /******************************************************************************/
-if `reloadFFR' { 
-    freduse DFEDTARU DFEDTAR DFEDTARL, clear 
+if `reloadFFR' {
+    run set_fred_key.do /* a simple do file to set your fred key */ 
+    import fred DFEDTARU DFEDTAR DFEDTARL, clear
+
+    /* Thanks to Hyeonseo Lee for pointing out new timing of DEFEDTARU       */ 
+    /* and DFEDTARL: no change until the day after the FOMC starting in 2017 */
+    sort daten
+    gen FDFEDTARL = DFEDTARL[_n+1]
+    gen FDFEDTARU = DFEDTARU[_n+1]
 
     /* Use target when available, and midpoint of range thereafter */ 
     gen FFR = DFEDTAR
-    replace FFR = (DFEDTARU + DFEDTARL)/2 if missing(FFR)
-    sort daten
-    /* These are all daily series, but not available every day */ 
+    replace FFR = (FDFEDTARU + FDFEDTARL)/2 if missing(FFR) & year(daten)>=2017
+    replace FFR = ( DFEDTARU +  DFEDTARL)/2 if missing(FFR) & year(daten)< 2017
+
+    /* These are all daily series, but not available every day */
+    sort daten    
     gen LFFR = FFR[_n-1]
     gen DFFR = FFR - LFFR
     rename daten fomc
+
     keep fomc FFR DFFR LFFR
     save intermediates/FFRfred.dta, replace
 }
+
 
 /******************************************************************************/
 /* Load Philadelphia Fed Greenbook dataset                                    */
@@ -205,4 +216,4 @@ cor shock_* RESID
 /******************************************************************************/ 
 rename (RESID shock_update) (rr_original rr_update)
 format fomc %tdCY-N-D
-outsheet fomc rr_original rr_update using output/rrshocks.csv, replace  comma
+outsheet fomc DFFR rr_original rr_update using output/rrshocks.csv, replace  comma

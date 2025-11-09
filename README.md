@@ -17,9 +17,13 @@ thereafter.
 The file `rrreplication.do` replicates the shocks. It requires
 the Romer & Romer replication dataset as input, and saves the
 csv file `output/rrshocks.csv`. The variables therein are
-1. fomc: the date of the FOMC meeting
-2. rr_original: the shocks from the RR replication file
-3. rr_update: updated shocks
+1. `fomc`: the date of the FOMC meeting
+2. `rr_original`: the shocks from the RR replication file
+3. `rr_update`: updated shocks
+4. `DFFR`: the actual change in the Fed funds target
 
 I am happy to answer any questions, and update this
 if more-recent data are available--just send me an email.
+
+Thanks to Paul Bousquet and Hyeonseo Lee for pointing
+out errors in previous versions of the code. 
